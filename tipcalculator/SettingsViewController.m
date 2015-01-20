@@ -10,6 +10,12 @@
 
 @interface SettingsViewController ()
 
+@property (weak, nonatomic) IBOutlet UITextField *defaultTip;
+@property (weak, nonatomic) IBOutlet UIButton *saveDefaultBtn;
+
+- (IBAction)onTap:(id)sender;
+- (void)saveDefault;
+
 @end
 
 @implementation SettingsViewController
@@ -27,12 +33,30 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    int defaultTipPercent = [defaults integerForKey:@"defaultTip"];
+    
+    self.defaultTip.text = [NSString stringWithFormat:@"%i", defaultTipPercent];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)onTap:(id)sender {
+    [self.view endEditing:YES];
+    [self saveDefault];
+}
+
+- (void)saveDefault {
+    int newDefaultTip = [self.defaultTip.text intValue];
+    self.defaultTip.text = [NSString stringWithFormat:@"%i", newDefaultTip];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger:newDefaultTip forKey:@"defaultTip"];
+    [defaults synchronize];
 }
 
 @end
